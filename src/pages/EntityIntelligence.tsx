@@ -4,16 +4,39 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RiskBadge } from '@/components/RiskBadge';
 import { Badge } from '@/components/ui/badge';
-import { Search, Building2, TrendingUp, AlertCircle, CheckCircle, XCircle, Newspaper } from 'lucide-react';
+import { Search, Building2, TrendingUp, AlertCircle, CheckCircle, XCircle, Newspaper, RefreshCw } from 'lucide-react';
 import { mockEntities } from '@/lib/mockData';
 import type { EntityProfile, NewsItem } from '@/lib/mockData';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { toast } from 'sonner';
+
+interface EntityResearchData {
+  name: string;
+  type: string;
+  country?: string;
+  riskLevel: 'high' | 'medium' | 'low';
+  riskScore: number;
+  blacklistStatus: {
+    list60B: boolean;
+    approvedManufacturer: boolean;
+    otherFlags: string[];
+  };
+  newsItems: NewsItem[];
+  tradingPatterns: Array<{
+    commodity: string;
+    frequency: number;
+    lastShipment: string;
+    normalOrigins: string[];
+  }>;
+}
 
 export default function EntityIntelligence() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEntity, setSelectedEntity] = useState<EntityProfile | null>(null);
+  const [researchData, setResearchData] = useState<EntityResearchData | null>(null);
+  const [isResearching, setIsResearching] = useState(false);
 
   const filteredEntities = searchTerm
     ? mockEntities.filter(e =>
@@ -21,6 +44,44 @@ export default function EntityIntelligence() {
         e.country.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : mockEntities;
+
+  const handleResearchEntity = async (entity: EntityProfile) => {
+    setIsResearching(true);
+    try {
+      const response = await fetch('/api/entities/research', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: entity.name,
+          type: entity.type,
+          country: entity.country,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || 'Research failed');
+      }
+
+      const data = await response.json();
+      setResearchData(data);
+      toast.success('Entity research completed', {
+        description: `Updated intelligence for ${entity.name}`,
+      });
+    } catch (error) {
+      console.error('Entity research error:', error);
+      toast.error('Failed to research entity', {
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+      });
+    } finally {
+      setIsResearching(false);
+    }
+  };
+
+  // Use research data if available, otherwise use mock entity data
+  const displayEntity = selectedEntity ? (researchData || selectedEntity) : null;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl" data-page="entity-intelligence">
@@ -99,27 +160,48 @@ export default function EntityIntelligence() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
-                        <CardTitle className="text-2xl">{selectedEntity.name}</CardTitle>
+                        <CardTitle className="text-2xl">{displayEntity.name}</CardTitle>
                         <CardDescription className="flex items-center gap-2 mt-2">
-                          <Badge variant="outline">{selectedEntity.type}</Badge>
+                          <Badge variant="outline">{displayEntity.type}</Badge>
                           <span>•</span>
-                          <span>{selectedEntity.country}</span>
+                          <span>{displayEntity.country}</span>
                         </CardDescription>
                       </div>
-                      <RiskBadge level={selectedEntity.riskLevel} score={selectedEntity.riskScore} />
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleResearchEntity(selectedEntity)}
+                          disabled={isResearching}
+                          className="gap-2"
+                        >
+                          <RefreshCw className={`h-4 w-4 ${isResearching ? 'animate-spin' : ''}`} />
+                          {isResearching ? 'Researching...' : 'Research'}
+                        </Button>
+                        <RiskBadge 
+                          level={displayEntity.riskLevel} 
+                          score={'riskScore' in displayEntity ? displayEntity.riskScore : undefined} 
+                        />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Registration Date</p>
-                        <p className="font-medium">{new Date(selectedEntity.registrationDate).toLocaleDateString()}</p>
+                    {researchData ? (
+                      <div className="text-sm text-muted-foreground">
+                        <p>Data refreshed via AI research</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Last Activity</p>
-                        <p className="font-medium">{new Date(selectedEntity.lastActivity).toLocaleDateString()}</p>
+                    ) : 'registrationDate' in selectedEntity ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Registration Date</p>
+                          <p className="font-medium">{new Date(selectedEntity.registrationDate).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Last Activity</p>
+                          <p className="font-medium">{new Date(selectedEntity.lastActivity).toLocaleDateString()}</p>
+                        </div>
                       </div>
-                    </div>
+                    ) : null}
                   </CardContent>
                 </Card>
 
@@ -134,39 +216,39 @@ export default function EntityIntelligence() {
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                       <div className="flex items-center gap-3">
-                        {selectedEntity.blacklistStatus.list60B ? (
+                        {displayEntity.blacklistStatus.list60B ? (
                           <XCircle className="h-5 w-5 text-red-600" />
                         ) : (
                           <CheckCircle className="h-5 w-5 text-green-600" />
                         )}
                         <span className="font-medium">60B Tax List</span>
                       </div>
-                      <Badge variant={selectedEntity.blacklistStatus.list60B ? 'destructive' : 'secondary'}>
-                        {selectedEntity.blacklistStatus.list60B ? 'FLAGGED' : 'Clear'}
+                      <Badge variant={displayEntity.blacklistStatus.list60B ? 'destructive' : 'secondary'}>
+                        {displayEntity.blacklistStatus.list60B ? 'FLAGGED' : 'Clear'}
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                       <div className="flex items-center gap-3">
-                        {selectedEntity.blacklistStatus.approvedManufacturer ? (
+                        {displayEntity.blacklistStatus.approvedManufacturer ? (
                           <CheckCircle className="h-5 w-5 text-green-600" />
                         ) : (
                           <AlertCircle className="h-5 w-5 text-amber-600" />
                         )}
                         <span className="font-medium">Approved Manufacturer</span>
                       </div>
-                      <Badge variant={selectedEntity.blacklistStatus.approvedManufacturer ? 'secondary' : 'outline'}>
-                        {selectedEntity.blacklistStatus.approvedManufacturer ? 'Verified' : 'Not Listed'}
+                      <Badge variant={displayEntity.blacklistStatus.approvedManufacturer ? 'secondary' : 'outline'}>
+                        {displayEntity.blacklistStatus.approvedManufacturer ? 'Verified' : 'Not Listed'}
                       </Badge>
                     </div>
 
-                    {selectedEntity.blacklistStatus.otherFlags.length > 0 && (
+                    {displayEntity.blacklistStatus.otherFlags.length > 0 && (
                       <>
                         <Separator />
                         <div>
                           <p className="text-sm font-medium mb-2">Other Flags</p>
                           <div className="space-y-2">
-                            {selectedEntity.blacklistStatus.otherFlags.map((flag, idx) => (
+                            {displayEntity.blacklistStatus.otherFlags.map((flag, idx) => (
                               <Alert key={idx} variant="destructive">
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>{flag}</AlertDescription>
@@ -189,7 +271,7 @@ export default function EntityIntelligence() {
                     <CardDescription>Recent news articles and mentions</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {selectedEntity.newsItems.map((news: NewsItem, idx: number) => (
+                    {displayEntity.newsItems.map((news: NewsItem, idx: number) => (
                       <div key={idx} className="border-l-4 border-muted pl-4 py-2">
                         <div className="flex items-start justify-between mb-1">
                           <h4 className="font-semibold text-sm">{news.headline}</h4>
@@ -226,7 +308,7 @@ export default function EntityIntelligence() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {selectedEntity.tradingPatterns.map((pattern, idx) => (
+                      {displayEntity.tradingPatterns.map((pattern, idx) => (
                         <div key={idx} className="p-4 rounded-lg bg-muted/50">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-semibold">{pattern.commodity}</span>

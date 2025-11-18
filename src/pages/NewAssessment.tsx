@@ -8,9 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RiskBadge } from '@/components/RiskBadge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Brain, CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
-import { generateAIAssessment } from '@/lib/mockData';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 
 export default function NewAssessment() {
   const [formData, setFormData] = useState({
@@ -45,12 +45,44 @@ export default function NewAssessment() {
     setIsAnalyzing(true);
     setAssessment(null);
 
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 2500));
+    try {
+      // Prepare shipment data for API
+      const shipmentData = {
+        shipper: formData.shipper,
+        importer: formData.importer,
+        manufacturer: formData.manufacturer || undefined,
+        commodity: formData.commodity,
+        origin: formData.origin,
+        destination: formData.destination || undefined,
+        value: formData.value ? parseFloat(formData.value) : undefined,
+        weight: formData.weight ? parseFloat(formData.weight) : undefined,
+        hsCode: formData.hsCode || undefined,
+        notes: formData.notes || undefined,
+      };
 
-    const result = generateAIAssessment(formData);
-    setAssessment(result);
-    setIsAnalyzing(false);
+      const response = await fetch('/api/assess', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(shipmentData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || 'Assessment failed');
+      }
+
+      const result = await response.json();
+      setAssessment(result);
+    } catch (error) {
+      console.error('Assessment error:', error);
+      toast.error('Failed to assess shipment', {
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const isFormValid = formData.shipper && formData.importer && formData.commodity && formData.origin;
