@@ -1,0 +1,29 @@
+{
+  "manufacturers": [
+    {
+      "name": "Global Trade Corp",
+      "country": "China",
+      "commodities": ["Auto Parts", "Electronics"],
+      "approvedDate": "2020-01-15"
+    },
+    {
+      "name": "Pacific Logistics Ltd",
+      "country": "Japan",
+      "commodities": ["Auto Parts", "Machinery"],
+      "approvedDate": "2015-03-10"
+    },
+    {
+      "name": "Flores International",
+      "country": "Colombia",
+      "commodities": ["Hibiscus Flowers", "Roses"],
+      "approvedDate": "2018-06-22"
+    },
+    {
+      "name": "Euro Shipping AG",
+      "country": "Germany",
+      "commodities": ["Machinery", "Auto Parts"],
+      "approvedDate": "2012-11-05"
+    }
+  ]
+}
+

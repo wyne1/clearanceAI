@@ -1,0 +1,26 @@
+{
+  "entities": [
+    {
+      "name": "Rapid Shift Logistics",
+      "country": "Panama",
+      "type": "shipper",
+      "listedDate": "2024-10-15",
+      "reason": "Tax evasion investigation"
+    },
+    {
+      "name": "Suspicious Trading Co",
+      "country": "Unknown",
+      "type": "shipper",
+      "listedDate": "2024-09-20",
+      "reason": "Fiscal irregularities"
+    },
+    {
+      "name": "Global Trade Corp",
+      "country": "China",
+      "type": "shipper",
+      "listedDate": "2024-09-20",
+      "reason": "Tax evasion investigation"
+    }
+  ]
+}
+

@@ -1,0 +1,54 @@
+{
+  "patterns": [
+    {
+      "commodity": "Soccer Balls",
+      "expectedOrigins": ["Pakistan"],
+      "primaryOrigin": "Pakistan",
+      "primaryOriginPercentage": 70,
+      "description": "70% of soccer balls are manufactured in Pakistan"
+    },
+    {
+      "commodity": "Hibiscus Flowers",
+      "expectedOrigins": ["Nigeria", "Sudan"],
+      "primaryOrigin": "Nigeria",
+      "primaryOriginPercentage": 65,
+      "description": "Nigeria is the major producer of hibiscus flowers"
+    },
+    {
+      "commodity": "Auto Parts",
+      "expectedOrigins": ["Japan", "Germany", "China", "South Korea"],
+      "primaryOrigin": "Japan",
+      "primaryOriginPercentage": 40,
+      "description": "Auto parts typically come from major automotive manufacturing countries"
+    },
+    {
+      "commodity": "Electronics",
+      "expectedOrigins": ["China", "Taiwan", "South Korea", "Japan"],
+      "primaryOrigin": "China",
+      "primaryOriginPercentage": 50,
+      "description": "Electronics primarily manufactured in Asian countries"
+    },
+    {
+      "commodity": "Textiles",
+      "expectedOrigins": ["India", "China", "Bangladesh", "Vietnam"],
+      "primaryOrigin": "China",
+      "primaryOriginPercentage": 35,
+      "description": "Textiles commonly sourced from Asian manufacturing hubs"
+    },
+    {
+      "commodity": "Machinery",
+      "expectedOrigins": ["Germany", "Japan", "USA", "China"],
+      "primaryOrigin": "Germany",
+      "primaryOriginPercentage": 30,
+      "description": "Machinery typically from industrialized nations"
+    },
+    {
+      "commodity": "Toys",
+      "expectedOrigins": ["China", "Vietnam"],
+      "primaryOrigin": "China",
+      "primaryOriginPercentage": 80,
+      "description": "Toys predominantly manufactured in China and Vietnam"
+    }
+  ]
+}
+
