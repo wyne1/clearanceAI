@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import NewAssessment from "./pages/NewAssessment";
 import EntityIntelligence from "./pages/EntityIntelligence";
 import ShipmentHistory from "./pages/ShipmentHistory";
+import CreateOrder from "./pages/CreateOrder";
 import NotFound from "./pages/NotFound";
 import { Navbar } from "@/components/Navbar";
 
@@ -20,6 +21,7 @@ const App = () => (
           <Navbar />
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/orders/create" element={<CreateOrder />} />
             <Route path="/assess" element={<NewAssessment />} />
             <Route path="/entities" element={<EntityIntelligence />} />
             <Route path="/history" element={<ShipmentHistory />} />

@@ -20,6 +20,27 @@
       "type": "shipper",
       "listedDate": "2024-09-20",
       "reason": "Tax evasion investigation"
+    },
+    {
+      "name": "Importaciones Fantasma SA",
+      "country": "Mexico",
+      "type": "buyer",
+      "listedDate": "2024-08-10",
+      "reason": "Shell company indicators, missing tax filings"
+    },
+    {
+      "name": "Comercializadora del Norte",
+      "country": "Mexico",
+      "type": "buyer",
+      "listedDate": "2024-07-22",
+      "reason": "Fraudulent import declarations"
+    },
+    {
+      "name": "MexTrade Importers",
+      "country": "Mexico",
+      "type": "buyer",
+      "listedDate": "2024-11-01",
+      "reason": "Under investigation for customs fraud"
     }
   ]
 }

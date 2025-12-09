@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, LayoutDashboard, Search, FileText, PlusCircle } from 'lucide-react';
+import { Shield, LayoutDashboard, Search, FileText, PlusCircle, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Navbar() {
@@ -7,8 +7,9 @@ export function Navbar() {
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/assess', label: 'New Assessment', icon: PlusCircle },
-    { path: '/entities', label: 'Entity Intelligence', icon: Search },
+    { path: '/orders/create', label: 'Create Order', icon: Package },
+    { path: '/assess', label: 'Assessment', icon: PlusCircle },
+    { path: '/entities', label: 'Entities', icon: Search },
     { path: '/history', label: 'History', icon: FileText }
   ];
 
