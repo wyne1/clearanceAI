@@ -8,7 +8,7 @@ from app.models.order_schemas import (
 )
 from app.services.entity_research import research_entity
 from app.services.blacklist_service import get_blacklist_status
-from app.services.openai_service import generate_risk_assessment_insights
+from app.services.ai_service import generate_risk_assessment_insights
 
 logger = logging.getLogger(__name__)
 

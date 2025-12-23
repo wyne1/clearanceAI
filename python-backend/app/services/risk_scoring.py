@@ -2,7 +2,7 @@ from typing import Dict, List, Optional
 from app.services.blacklist_service import get_blacklist_status
 from app.services.pattern_service import check_commodity_origin_match, analyze_trading_pattern_anomaly
 from app.services.entity_research import research_entity
-from app.services.openai_service import generate_risk_assessment_insights, analyze_trading_pattern
+from app.services.ai_service import generate_risk_assessment_insights, analyze_trading_pattern
 from app.models.schemas import RiskAssessment, EntityCheck
 
 

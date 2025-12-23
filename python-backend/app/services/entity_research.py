@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, List, Optional, Any, Literal
-from app.services.openai_service import research_entity_news
+from app.services.ai_service import research_entity_news
 from app.services.blacklist_service import get_blacklist_status
 from app.models.schemas import EntityResearch, NewsItem, TradingPattern, BlacklistStatus
 
